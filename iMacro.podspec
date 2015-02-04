@@ -7,5 +7,5 @@ s.source = { :git => 'https://github.com/zhrren/iMacro.git' }
 s.source_files = '*.{h,m}'
 s.public_header_files = '*.h'
 s.requires_arc = true
-s.platform = :ios
+s.platform = :ios, 6.0
 end
