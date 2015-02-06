@@ -2,13 +2,11 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#pragma mark -
 #pragma mark App Information
 #define APP_NAME [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]
 #define APP_VERSION_STRING [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
 #define APP_VERSION [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]
 
-#pragma mark -
 #pragma mark DEVICE Information
 #define IS_PHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
 #define IS_PAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -20,20 +18,20 @@
 #define SCREEN_WIDTH [[UIScreen mainScreen] bounds].size.width
 #define SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
 
-#pragma mark -
+#pragma mark Application
+#define BOUND ((AppDelegate *)[[UIApplication sharedApplication] delegate])
+
 #pragma mark constant
 #define CONSTANT_TOUCH_HEIGHT_DEFAULT 44
 #define CONSTANT_TOUCH_HEIGHT_SMALL 32
 #define CONSTANT_STATUS_HEIGHT 20
 
-#pragma mark -
 #pragma mark UIColor
 #define UIColorFromHexWithAlpha(hexValue, a) [UIColor colorWithRed:((float)((hexValue & 0xFF0000) >> 16))/255.0 green:((float)((hexValue & 0xFF00) >> 8))/255.0 blue:((float)(hexValue & 0xFF))/255.0 alpha:a]
 #define UIColorFromHex(hexValue) UIColorFromHexWithAlpha(hexValue,1.0)
 #define UIColorFromRGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 #define UIColorFromRGB(r, g, b) UIColorFromRGBA(r,g,b,1.0)
 
-#pragma mark -
 #pragma mark Frame Geometry
 #define CENTER_VERTICALLY(parent, child) floor((parent.frame.size.height - child.frame.size.height) / 2)
 #define CENTER_HORIZONTALLY(parent, child) floor((parent.frame.size.width - child.frame.size.width) / 2)
@@ -50,7 +48,6 @@
 #define BOTTOM(view) (view.frame.origin.y + view.frame.size.height)
 #define RIGHT(view) (view.frame.origin.x + view.frame.size.width)
 
-#pragma mark -
 #pragma mark Debugging
 #define StartTimer(ignored) NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 #define EndTimer(msg) NSTimeInterval stop = [NSDate timeIntervalSinceReferenceDate]; NSLog(@"%@", [NSString stringWithFormat:@"%@ Time = %f", msg, stop-start]);
@@ -63,6 +60,24 @@
 #define ERROR(fmt, ...) LOG(fmt, ## __VA_ARGS__)
 #define TRACE(fmt, ...) LOG(fmt, ## __VA_ARGS__)
 #define METHOD_NOT_IMPLEMENTED() NSAssert(NO, @"You must override %@ in a subclass", NSStringFromSelector(_cmd))
+
+#pragma mark Image Helper
+#define PNG(NAME)          [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(NAME) ofType:@"png"]]
+#define JPG(NAME)          [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(NAME) ofType:@"jpg"]]
+#define IMAGE(NAME, EXT)        [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(NAME) ofType:(EXT)]]
+
+#pragma mark String Helper
+#define FORMAT(format, ...) [NSString stringWithFormat:(format), ##__VA_ARGS__]
+
+static inline NSString *CachesDirectory() {
+    return NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+}
+static inline NSString *LibraryDirectory() {
+    return NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
+}
+static inline NSString *DocumentsDirectory() {
+    return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+}
 
 static inline BOOL IsEmpty(id thing) {
     return thing == nil || [thing isEqual:[NSNull null]]
@@ -99,12 +114,15 @@ static inline void TimeThisBlock(void (^block)(void), NSString *message) {
     LOG(@"Took %f seconds to %@", (CGFloat) nanos / NSEC_PER_SEC, message);
 }
 
-static inline NSString *CachesDirectory() {
-    return NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
-}
-static inline NSString *LibraryDirectory() {
-    return NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
-}
-static inline NSString *DocumentsDirectory() {
-    return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+static inline NSString *MD5(NSString *str) {
+    const char *cStr = [str UTF8String];
+    unsigned char result[16];
+    CC_MD5(cStr, strlen(cStr), result); // This is the md5 call
+    return [NSString stringWithFormat:
+            @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15]
+    ];
 }
