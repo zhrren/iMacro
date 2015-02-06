@@ -1,6 +1,7 @@
 #import <mach/mach_time.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <CommonCrypto/CommonDigest.h>
 
 #pragma mark App Information
 #define APP_NAME [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]
