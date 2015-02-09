@@ -20,7 +20,7 @@
 #define SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
 
 #pragma mark Application
-#define DOMAIN ((AppDelegate *)[[UIApplication sharedApplication] delegate])
+#define AppDomain ((AppDelegate *)[[UIApplication sharedApplication] delegate])
 
 #pragma mark constant
 #define CONSTANT_TOUCH_HEIGHT_DEFAULT 44
